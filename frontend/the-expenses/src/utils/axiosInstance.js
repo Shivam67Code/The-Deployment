@@ -1,8 +1,11 @@
 import axios from "axios";
-import { BASE_URL } from "./apiPaths";
 
-// Add console log to check if BASE_URL is being set correctly
-console.log("API Base URL:", BASE_URL);
+// ✅ Use Vite env vars + fallback logic
+const BASE_URL = import.meta.env.MODE === "production"
+  ? import.meta.env.VITE_API_URL || "https://the-deployment.vercel.app"
+  : "http://localhost:5000";
+
+console.log("🟡 API Base URL:", BASE_URL);
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -13,50 +16,43 @@ const axiosInstance = axios.create({
   }
 });
 
-// Request Interceptor
+// 🔐 Request Interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
-    // Check for token with either name (for backwards compatibility)
     const accessToken = localStorage.getItem("token") || localStorage.getItem("authToken");
-
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
-      console.log("Authorization header set:", `Bearer ${accessToken.substring(0, 10)}...`);
+      console.log("✅ Authorization set:", `Bearer ${accessToken.substring(0, 10)}...`);
     } else {
-      console.log("No token found, request will be unauthenticated");
+      console.log("⚠️ No token found, unauthenticated request");
     }
     return config;
   },
   (error) => {
-    console.error("Request interceptor error:", error);
+    console.error("❌ Request error:", error);
     return Promise.reject(error);
   }
 );
 
-// Response Interceptor
+// 🚨 Response Interceptor
 axiosInstance.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   (error) => {
-    // Handle common errors globally
     if (error.response) {
-      console.error("API Error:", error.response.status, error.response.data);
+      console.error("❌ API Response Error:", error.response.status, error.response.data);
 
       if (error.response.status === 401) {
-        console.log("Unauthorized - clearing token and redirecting to login");
-        localStorage.removeItem("token"); // Clear the invalid token
-        // Only redirect to login if we're not already on the login page
-        if (!window.location.pathname.includes('/login')) {
+        localStorage.removeItem("token");
+        if (!window.location.pathname.includes("/login")) {
           window.location.href = "/login";
         }
       } else if (error.response.status === 500) {
-        console.error("Server error. Please try again later.");
+        console.error("❗ Server error – try again later");
       }
     } else if (error.code === "ECONNABORTED") {
-      console.error("Request timeout. Please try again.");
+      console.error("⏱️ Request timeout");
     } else {
-      console.error("Network error:", error.message);
+      console.error("🌐 Network error:", error.message);
     }
     return Promise.reject(error);
   }
