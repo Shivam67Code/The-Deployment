@@ -21,6 +21,11 @@ app.use(
 );
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.send("API is running...");
+}
+);
+
 connectDB();
 
 app.use("/api/v1/auth", authRoutes);
