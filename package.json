@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.7.0",
+    "react-redux": "^9.2.0"
+  }
+}
