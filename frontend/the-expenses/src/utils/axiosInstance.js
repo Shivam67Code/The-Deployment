@@ -1,9 +1,9 @@
 import axios from "axios";
 
-// ✅ Use correct env var (VITE_API_BASE) + fallback
+// ✅ Correct BASE_URL without repeating /api/v1
 const BASE_URL =
   import.meta.env.MODE === "production"
-    ? import.meta.env.VITE_API_BASE || "https://the-deployment.vercel.app/api/v1"
+    ? import.meta.env.VITE_API_BASE || "https://the-deployment.vercel.app"
     : "http://localhost:5000";
 
 console.log("🟡 API Base URL:", BASE_URL);
@@ -14,7 +14,7 @@ const axiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
-  }
+  },
 });
 
 // 🔐 Request Interceptor
