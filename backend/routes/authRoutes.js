@@ -21,11 +21,28 @@ router.get('/getUser', protect, getUserInfo);
 router.get('/user', protect, getUser);
 
 router.post("/upload-image", upload.single("image"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: "No file uploaded" });
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    // Use a relative path that works in both local and production environments
+    // This assumes your backend is properly configured to serve static files from /uploads
+    const imageUrl = `/uploads/${req.file.filename}`;
+
+    res.status(200).json({
+      success: true,
+      imageUrl,
+      fullUrl: `${req.protocol}://${req.get("host")}${imageUrl}`
+    });
+  } catch (error) {
+    console.error("Image upload error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error uploading image",
+      error: error.message
+    });
   }
-  const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
-  res.status(200).json({ imageUrl });
 });
 
 module.exports = router;
