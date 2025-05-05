@@ -1,9 +1,10 @@
 import axios from "axios";
 
-// ✅ Use Vite env vars + fallback logic
-const BASE_URL = import.meta.env.MODE === "production"
-  ? import.meta.env.VITE_API_URL || "https://the-deployment.vercel.app"
-  : "http://localhost:5000";
+// ✅ Use correct env var (VITE_API_BASE) + fallback
+const BASE_URL =
+  import.meta.env.MODE === "production"
+    ? import.meta.env.VITE_API_BASE || "https://the-deployment.vercel.app/api/v1"
+    : "http://localhost:5000";
 
 console.log("🟡 API Base URL:", BASE_URL);
 
