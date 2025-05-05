@@ -12,29 +12,20 @@ const mealRoutes = require('./routes/mealRoutes');
 const app = express();
 
 // Middleware to handle CORS
-app.use(
-  cors({
-    origin: [
-      "https://shivamstracker.netlify.app",
-      "http://localhost:3000",
-      "http://localhost:8000",
-      "http://localhost:5000"
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-    exposedHeaders: ["Authorization"],
-  })
-);
+const corsOptions = {
+  origin: ["https://shivamstracker.netlify.app", "http://localhost:3000"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  exposedHeaders: ["Authorization"],
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get('/', (req, res) => {
   res.send("API is running...");
 });
-app.get('/api/v1', (req, res) => {
-  res.send("Welcome to the API v1");
-});
-
 
 connectDB();
 
@@ -43,6 +34,7 @@ app.use("/api/v1/income", incomeRoutes);
 app.use("/api/v1/expense", expenseRoutes);
 app.use("/api/v1/dashboard", dashboardRoutes);
 app.use("/api/v1/meals", mealRoutes);
+
 // Serve uploads folder 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
