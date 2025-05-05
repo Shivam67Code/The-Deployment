@@ -1,0 +1,1064 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import "tailwindcss";
+
+
+:root {
+  --bg-color: #fcfbfc;
+  --text-color: #1f2937;
+  --accent-color: #10b981;
+  --card-bg: #ffffff;
+  --button-bg: #10b981;
+  --sidebar-bg: #ffffff;
+  --sidebar-text: #1f2937;
+  --sidebar-active: #10b981;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --border-color: #e5e7eb;
+}
+
+@theme {
+  --font-display: "Poppins", "sans-serif";
+  --breakpoint-3xl: 1920px;
+  --color-primary: var(--accent-color);
+}
+
+@layer base {
+  html {
+    font-family: var(--font-display);
+  }
+
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    overflow-x: hidden;
+  }
+}
+
+/* Add background patterns for themes */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: var(--theme-pattern);
+  background-repeat: repeat;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.input-box {
+  @apply w-full flex items-center gap-3 text-sm font-medium text-gray-800 bg-white/90 backdrop-blur-md rounded-lg px-5 py-3.5 mb-4 mt-2 border border-gray-300 shadow-sm transition-all duration-300 ease-out hover:border-green-800 hover:shadow-md hover:shadow-green-900/30 focus-within:border-green-900 focus-within:ring-2 focus-within:ring-gray-500/40 focus-within:shadow-lg focus-within:shadow-green-800/30 dark:bg-gray-800/90 dark:border-gray-600 dark:text-gray-200 dark:hover:border-green-700 dark:hover:shadow-gray-500/30 dark:focus-within:border-gray-400 dark:focus-within:ring-green-800/30 dark:focus-within:shadow-gray-400/20;
+}
+
+.input-box input {
+  @apply flex-1 bg-transparent border-0 outline-none p-0 text-gray-800 placeholder:text-slate-400/80 placeholder:font-light focus:ring-0 selection:bg-green-900/20 dark:text-gray-100 dark:placeholder:text-slate-500/70 dark:selection:bg-green-800/40 caret-gray-500 dark:caret-gray-400;
+}
+
+.input-box input:-webkit-autofill,
+.input-box input:-webkit-autofill:hover,
+.input-box input:-webkit-autofill:focus {
+  @apply border-0 -mx-3 px-3 shadow-[0_0_0_1000px_white_inset] dark:shadow-[0_0_0_1000px_#1F2937_inset] caret-gray-500 text-green-900 dark:text-green-700 transition-all duration-700;
+}
+
+.btn-primary {
+  @apply relative bg-green-900 text-white font-semibold px-4 py-2 rounded-lg shadow-md transition-all duration-300 ease-out hover:bg-green-800 hover:shadow-lg hover:shadow-green-900/30 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-green-900/50 focus:ring-offset-2 active:bg-green-950 active:shadow-inner active:translate-y-0.5 disabled:bg-green-900/50 disabled:cursor-not-allowed disabled:shadow-none disabled:hover:translate-y-0 dark:bg-green-700 dark:text-gray-200 dark:hover:bg-green-600 dark:focus:ring-green-600/50 dark:active:bg-green-800 select-none uppercase tracking-wide text-sm;
+
+  /* Subtle shine effect */
+  overflow: hidden;
+}
+
+.btn-primary::after {
+  content: '';
+  @apply absolute inset-0 rounded-lg opacity-0;
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0) 100%);
+  transition: opacity 0.3s ease;
+}
+
+.btn-primary {
+  @apply relative inline-block bg-green-900 text-white font-semibold text-sm md:text-base px-8 py-2 md:px-10 md:py-2.5 rounded-lg shadow-md transition-all duration-300 ease-out transform hover:bg-green-800 hover:shadow-lg hover:-translate-y-0.5 hover:scale-[1.01] focus:outline-none focus:ring-2 focus:ring-green-900/50 focus:ring-offset-2 active:bg-green-950 active:shadow-inner active:translate-y-0.5 active:scale-[0.98] disabled:bg-green-900/50 disabled:cursor-not-allowed disabled:shadow-none disabled:hover:translate-y-0 dark:bg-green-700 dark:text-gray-200 dark:hover:bg-green-600 dark:focus:ring-green-600/50 dark:active:bg-green-800 uppercase tracking-wide select-none;
+}
+
+/* Pulse animation on hover */
+.btn-primary:hover {
+  animation: btn-pulse 1s ease-in-out;
+}
+
+@keyframes btn-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5);
+  }
+
+  50% {
+    box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+  }
+}
+
+.card {
+  @apply bg-white p-8 rounded-3xl shadow-md shadow-gray-300 border border-gray-100 transition-all duration-300 ease-in-out hover:bg-gray-50 hover:shadow-inner hover:border-gray-300 hover:text-gray-700;
+}
+
+
+
+.card-btn {
+  @apply flex items-center gap-3 text-[12px] font-medium text-gray-800 hover:text-green-700 bg-gray-100 hover:bg-green-200 px-4 py-2 rounded-lg border border-gray-200/50 cursor-pointer;
+}
+
+.add-btn {
+  @apply flex items-center justify-center gap-2 text-base font-medium tracking-wide text-green-700 hover:text-green-800 bg-green-50 hover:bg-green-100 rounded-xl px-6 py-3 shadow-lg hover:shadow-xl transition duration-150 relative overflow-hidden cursor-pointer focus:outline-none focus:ring focus:ring-green-300 dark:bg-green-900 dark:text-green-100;
+
+  /* Inner highlight effect */
+  background-image: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.7) 0%,
+      rgba(255, 255, 255, 0) 60%);
+
+  /* Subtle elevation */
+  transform: translateY(0);
+}
+
+/* Tactile click effect - noticeable depression */
+.add-btn:active {
+  @apply bg-green-200 shadow-inner;
+  transform: translateY(2px);
+  transition-duration: 50ms;
+  background-image: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.3) 0%,
+      rgba(255, 255, 255, 0.1) 60%);
+}
+
+/* Icon animation */
+.add-btn:hover .icon {
+  @apply text-green-700;
+}
+
+/* Icon click effect */
+.add-btn:active .icon {
+  @apply text-green-800;
+  transform: scale(0.92);
+}
+
+/* States */
+.add-btn.loading {
+  @apply animate-pulse cursor-wait opacity-80;
+}
+
+.add-btn.success {
+  @apply bg-green-100 text-green-800;
+}
+
+.add-btn.error {
+  @apply bg-red-50 text-red-600;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .add-btn {
+    @apply px-4 py-2 text-sm;
+  }
+}
+
+/* Add these theme transition effects at the end of your file */
+
+/* Global theme transition for all themed elements */
+html {
+  transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+}
+
+/* When theme is changing, add a smooth transition to all applicable properties */
+.theme-changing * {
+  transition: background-color 0.5s ease-in-out,
+              color 0.5s ease-in-out,
+              border-color 0.5s ease-in-out,
+              box-shadow 0.5s ease-in-out,
+              opacity 0.5s ease-in-out,
+              transform 0.5s ease-in-out !important;
+}
+
+/* Theme change animation flash */
+.theme-changing {
+  animation: theme-flash 0.8s ease-in-out;
+}
+
+@keyframes theme-flash {
+  0% { filter: brightness(100%); }
+  30% { filter: brightness(110%); }
+  100% { filter: brightness(100%); }
+}
+
+/* Theme-specific animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes floatIn {
+  0% { opacity: 0; transform: translateY(10px) scale(0.98); }
+  70% { opacity: 1; transform: translateY(-5px) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes waveIn {
+  0% { transform: translateX(-10px); opacity: 0; }
+  60% { transform: translateX(5px); opacity: 1; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes pulseIn {
+  0% { transform: scale(0.95); opacity: 0; }
+  70% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Add these animation classes that components can use */
+.animate-with-theme {
+  animation-duration: 0.7s;
+  animation-fill-mode: both;
+  animation-name: var(--element-animation, fadeIn);
+}
+
+.card-with-theme-animation {
+  animation-duration: 0.8s;
+  animation-fill-mode: both;
+  animation-name: var(--card-animation, fadeIn);
+}
+
+/* Theme-specific animations */
+@keyframes roseBloom {
+  0% { opacity: 0; transform: scale(0.95); }
+  60% { opacity: 1; transform: scale(1.02); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes roseSlideIn {
+  0% { opacity: 0; transform: translateX(-15px) rotate(-5deg); }
+  100% { opacity: 1; transform: translateX(0) rotate(0); }
+}
+
+@keyframes waveRise {
+  0% { opacity: 0; transform: translateY(10px); }
+  50% { opacity: 0.7; transform: translateY(-3px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes rainDrop {
+  0% { opacity: 0; transform: translateY(-5px); }
+  50% { opacity: 0.8; }
+  70% { transform: translateY(2px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes rainFall {
+  0% { opacity: 0; transform: translateY(-15px); }
+  70% { opacity: 0.7; }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes heartBeat {
+  0% { transform: scale(0.95); opacity: 0; }
+  25% { transform: scale(1.05); }
+  40% { transform: scale(0.98); }
+  60% { transform: scale(1.02); }
+  80% { transform: scale(0.99); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes heartPulse {
+  0% { opacity: 0; transform: translateX(-5px); }
+  50% { opacity: 0.8; transform: translateX(3px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes sunsetFade {
+  0% { opacity: 0; transform: translateY(10px); }
+  30% { opacity: 0.5; }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sunsetGlow {
+  0% { opacity: 0; filter: brightness(0.8); }
+  50% { filter: brightness(1.1); }
+  100% { opacity: 1; filter: brightness(1); }
+}
+
+@keyframes glassMorph {
+  0% { 
+    opacity: 0; 
+    backdrop-filter: blur(0px);
+    transform: translateY(8px) scale(0.97);
+  }
+  60% { 
+    backdrop-filter: blur(12px);
+    transform: translateY(-3px) scale(1.01);
+  }
+  100% { 
+    opacity: 1; 
+    backdrop-filter: blur(10px);
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes glassSlide {
+  0% { 
+    opacity: 0; 
+    backdrop-filter: blur(0px);
+    transform: translateX(-10px);
+  }
+  70% { 
+    backdrop-filter: blur(12px);
+  }
+  100% { 
+    opacity: 1; 
+    backdrop-filter: blur(10px);
+    transform: translateX(0);
+  }
+}
+
+@keyframes leafGrow {
+  0% { opacity: 0; transform: scale(0.92) translateY(10px); }
+  70% { transform: scale(1.02) translateY(-3px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes leafSway {
+  0% { opacity: 0; transform: translateX(-8px) rotate(-3deg); }
+  65% { transform: translateX(3px) rotate(1deg); }
+  100% { opacity: 1; transform: translateX(0) rotate(0); }
+}
+
+@keyframes starTwinkle {
+  0% { opacity: 0; transform: scale(0.95); filter: brightness(0.8); }
+  40% { filter: brightness(1.3); }
+  70% { transform: scale(1.03); }
+  100% { opacity: 1; transform: scale(1); filter: brightness(1); }
+}
+
+@keyframes nightFade {
+  0% { opacity: 0; transform: translateY(8px); filter: brightness(0.7); }
+  50% { filter: brightness(1.1); }
+  100% { opacity: 1; transform: translateY(0); filter: brightness(1); }
+}
+
+/* Glass theme special handling */
+.theme-glass {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800" opacity="0.03"><defs><filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="20" /></filter></defs><circle cx="400" cy="400" r="200" fill="white" filter="url(%23blur)" /></svg>'), linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%);
+  background-attachment: fixed;
+}
+
+.theme-glass * {
+  backdrop-filter: var(--backdrop-filter, none);
+  -webkit-backdrop-filter: var(--backdrop-filter, none);
+}
+
+/* Special effects for themes */
+[data-theme-effect="rose-petals"] #theme-emoji-container::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="2" fill="%23ffa6b9" opacity="0.6" /></svg>');
+  pointer-events: none;
+  opacity: 0.05;
+}
+
+[data-theme-effect="ocean-waves"]::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  background: linear-gradient(transparent 0%, transparent 95%, rgba(0, 200, 255, 0.15) 100%);
+  z-index: -1;
+  pointer-events: none;
+  animation: ocean-wave 10s ease-in-out infinite;
+}
+
+@keyframes ocean-wave {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+[data-theme-effect="rain-drops"]::after {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent 0%, transparent 95%, rgba(119, 146, 227, 0.15) 100%),
+              url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="10" viewBox="0 0 4 10"><path d="M2,0 L4,0 L2,10 L0,10 Z" fill="%237792e3" opacity="0.3" /></svg>');
+  animation: rain-fall 10s linear infinite;
+  pointer-events: none;
+  opacity: 0.08;
+  z-index: -1;
+}
+
+@keyframes rain-fall {
+  from { transform: translateY(-10%); }
+  to { transform: translateY(10%); }
+}
+
+[data-theme-effect="floating-hearts"]::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path d="M10,4 C10,4 8.1,2 5.74,2 C3.38,2 1,3.55 1,6.73 C1,8.99 2.4,10.81 4.15,12.4 C5.39,13.5 6.73,14.5 8.34,15.69 C8.5,15.81 8.53,15.83 9,16.08 C9.47,16.33 9.5,16.35 9.66,16.47 C9.87,16.61 10.13,16.61 10.34,16.47 C10.5,16.35 10.53,16.33 11,16.08 C11.47,15.83 11.5,15.81 11.66,15.69 C13.27,14.5 14.61,13.5 15.85,12.4 C17.6,10.81 19,8.99 19,6.73 C19,3.55 16.62,2 14.26,2 C11.9,2 10,4 10,4 Z" fill="%23ff5a5f" opacity="0.2" /></svg>');
+  pointer-events: none;
+  opacity: 0.05;
+  animation: float-hearts 15s linear infinite;
+}
+
+@keyframes float-hearts {
+  from { background-position: 0 0; }
+  to { background-position: 100px 100px; }
+}
+
+/* Add more special effects for other themes... */
+
+/* Global animation for theme changes */
+.theme-changing {
+  animation: theme-flash 0.8s ease-in-out;
+}
+
+@keyframes theme-flash {
+  0% { filter: brightness(100%); }
+  30% { filter: brightness(110%); }
+  100% { filter: brightness(100%); }
+}
+
+/* Animation classes for components */
+.animate-with-theme {
+  animation-duration: 0.7s;
+  animation-fill-mode: both;
+  animation-name: var(--element-animation, fadeIn);
+}
+
+.card-with-theme-animation {
+  animation-duration: 0.8s;
+  animation-fill-mode: both;
+  animation-name: var(--card-animation, fadeIn);
+}
+
+/* Gradients and special effects */
+.btn-primary, .card-btn {
+  background: var(--button-gradient, var(--button-bg));
+}
+
+.card {
+  background: var(--card-bg-gradient, var(--card-bg));
+}
+
+/* Emoji container for theme change animations */
+#theme-emoji-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+/* Add these styles at the end of your file for the enhanced theme selector */
+
+/* Theme dropdown animation */
+@keyframes dropdown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-dropdown {
+  animation: dropdown 0.3s ease-out forwards;
+}
+
+/* Theme selector grid */
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+/* Theme option card styling */
+.theme-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px;
+  border-radius: 14px;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  overflow: hidden;
+  position: relative;
+}
+
+.theme-option:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px var(--shadow-color) !important;
+}
+
+.theme-option.active {
+  border-color: var(--accent-color);
+  transform: scale(1.03);
+}
+
+/* Theme emoji animation on hover */
+.theme-option .theme-emoji {
+  font-size: 1.2rem;
+  line-height: 1;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.theme-option:hover .theme-emoji {
+  transform: scale(1.2) rotate(10deg);
+  animation: float 2s infinite ease-in-out;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* Enhanced navbar with theme elements */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navbar-brand::before {
+  content: var(--theme-emoji);
+  font-size: 1.5em;
+  margin-right: 4px;
+}
+
+/* Color preview section */
+.theme-color-preview {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.color-swatch {
+  height: 15px;
+  border-radius: 5px;
+}
+
+.main-color {
+  height: 20px;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.color-swatches {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+}
+
+/* Theme information */
+.theme-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  position: relative;
+}
+
+.theme-emoji {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.theme-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-color);
+  flex-grow: 1;
+}
+
+.theme-active-badge {
+  position: absolute;
+  right: -1px;
+  top: -1px;
+  background: var(--accent-color);
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Scrollbar for the theme list */
+.theme-selector .theme-list {
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+.theme-selector .theme-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Scrollbar for the theme list */
+.theme-selector .max-h-[450px]::-webkit-scrollbar {
+  width: 6px;
+}
+
+.theme-selector .max-h-[450px]::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.theme-selector .max-h-[450px]::-webkit-scrollbar-thumb {
+  background-color: var(--accent-color);
+  border-radius: 20px;
+  opacity: 0.7;
+}
+
+/* Theme option hover and focus states */
+.theme-option:hover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, 
+    rgba(255,255,255,0.1) 0%, 
+    rgba(255,255,255,0) 100%);
+  pointer-events: none;
+}
+
+.theme-option:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-color);
+}
+
+/* Add a subtle theme preview animation */
+.theme-option:hover .theme-emoji {
+  transform: scale(1.2);
+  transition: transform 0.3s ease;
+}
+
+/* Active theme marker */
+.theme-option.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 20px 20px 0;
+  border-color: transparent var(--accent-color) transparent transparent;
+}
+
+/* Add these styles for the compact theme selector */
+.theme-dropdown {
+  animation: dropdown 0.2s ease-out forwards;
+}
+
+@keyframes dropdown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.compact-theme-selector {
+  font-size: 0.9rem;
+}
+
+.compact-theme-option {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 12px;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+.compact-theme-option:hover {
+  background-color: rgba(var(--accent-color-rgb), 0.06);
+}
+
+.compact-theme-option.active {
+  font-weight: 500;
+  background-color: rgba(var(--accent-color-rgb), 0.08);
+}
+
+.compact-theme-option .theme-emoji {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+  font-size: 1.1rem;
+  transition: transform 0.2s ease;
+}
+
+.compact-theme-option:hover .theme-emoji {
+  transform: scale(1.2) rotate(5deg);
+}
+
+.compact-theme-option .theme-name {
+  flex: 1;
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+.compact-theme-option .active-check {
+  width: 16px;
+  height: 16px;
+  opacity: 0.9;
+}
+
+/* Add a subtle shine effect on hover */
+.compact-theme-option::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.compact-theme-option:hover::after {
+  left: 100%;
+}
+
+/* Enhance scrollbar styling */
+.theme-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.theme-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.theme-list::-webkit-scrollbar-thumb {
+  background-color: var(--accent-color);
+  border-radius: 10px;
+  opacity: 0.7;
+}
+
+/* Better dropdown animation */
+.theme-dropdown {
+  animation: theme-dropdown 0.25s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  transform-origin: top right;
+}
+
+@keyframes theme-dropdown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Enhanced Glass Theme Styles - Selective Approach */
+/* Remove the full-screen glass effect */
+[data-theme="glass"] body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" opacity="0.4"><defs><linearGradient id="a" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%235fb8e3" stop-opacity="0.1"/><stop offset="100%" stop-color="%2388d3f4" stop-opacity="0"/></linearGradient></defs><rect width="100%" height="100%" fill="url(%23a)"/><circle cx="400" cy="300" r="200" fill="%2388d3f4" opacity="0.05"/><circle cx="1000" cy="600" r="300" fill="%235fb8e3" opacity="0.05"/></svg>');
+  background-attachment: fixed;
+  background-size: cover;
+  pointer-events: none;
+  z-index: -2;
+  /* Remove the gradient background */
+}
+
+/* Remove the grain texture overlay from the whole page */
+[data-theme="glass"] body::after {
+  content: none;
+}
+
+/* Apply glass effect only to specific elements */
+[data-theme="glass"] .card {
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15) !important;
+}
+
+[data-theme="glass"] .card:hover {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 10px 40px rgba(31, 38, 135, 0.2) !important;
+}
+
+[data-theme="glass"] .sidebar,
+[data-theme="glass"] nav {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border-color: rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 0 4px 20px rgba(31, 38, 135, 0.15) !important;
+}
+
+/* Glass buttons and inputs */
+[data-theme="glass"] .btn-primary,
+[data-theme="glass"] .card-btn {
+  background: rgba(136, 211, 244, 0.85) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 4px 15px rgba(136, 211, 244, 0.25) !important;
+  color: #104861 !important;
+  font-weight: 500 !important;
+}
+
+[data-theme="glass"] .btn-primary:hover,
+[data-theme="glass"] .card-btn:hover {
+  background: rgba(136, 211, 244, 0.95) !important;
+  box-shadow: 0 6px 20px rgba(136, 211, 244, 0.35) !important;
+}
+
+[data-theme="glass"] .input-box {
+  background: rgba(255, 255, 255, 0.5) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 0 4px 15px rgba(31, 38, 135, 0.1) !important;
+}
+
+[data-theme="glass"] .input-box:focus-within {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border: 1px solid rgba(136, 211, 244, 0.6) !important;
+  box-shadow: 0 4px 20px rgba(136, 211, 244, 0.2) !important;
+}
+
+/* Glass dropdowns and modals */
+[data-theme="glass"] .theme-dropdown,
+[data-theme="glass"] .dropdown-menu {
+  background: rgba(255, 255, 255, 0.65) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15) !important;
+}
+
+/* Shiny reflections only on cards */
+@keyframes glass-shine {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+[data-theme="glass"] .card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 25%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  pointer-events: none;
+  animation: glass-shine 6s infinite linear;
+  z-index: 2;
+  border-radius: inherit;
+}
+
+/* Specific styling for glass theme backgrounds and content */
+[data-theme="glass"] {
+  --bg-color: #f0f8ff !important; /* Light blue background */
+  --text-color: #2a4a56 !important;
+}
+
+/* Animation Keyframes */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes slideUp {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideIn {
+  0% { transform: translateX(-20px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+/* Animation Utility Classes */
+.animate-float-slow {
+  animation: float 8s ease-in-out infinite;
+}
+
+.animate-float-medium {
+  animation: float 6s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+.animate-float-fast {
+  animation: float 10s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+.animate-fade-in {
+  animation: fadeIn 1.5s ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 1s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.8s ease-out forwards;
+}
+
+/* Add these additional animations for input fields */
+@keyframes bounce-once {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes fade-down {
+  0% { transform: translateY(-8px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+  20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
+
+.animate-bounce-once {
+  animation: bounce-once 0.5s ease-in-out;
+}
+
+.animate-fade-down {
+  animation: fade-down 0.3s ease-out forwards;
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+/* Add pulse animation if not already defined */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-pulse {
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Description toggle animation */
+.transaction-description-enter {
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.transaction-description-enter-active {
+  max-height: 200px;
+  opacity: 1;
+}
+
+.transaction-description-exit {
+  max-height: 200px;
+  opacity: 1;
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.transaction-description-exit-active {
+  max-height: 0;
+  opacity: 0;
+}
+
+/* Add these styles at the end of your CSS file */
+.chart-container {
+  position: relative;
+  transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.chart-container.updating {
+  opacity: 0.7;
+  transform: scale(0.97);
+}
+
+.chart-update-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--accent-color, #3b82f6);
+  color: white;
+  font-size: 0.75rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 10;
+  pointer-events: none;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.15);
+}
+
+.chart-container.updating .chart-update-indicator {
+  opacity: 1;
+}
+```
