@@ -14,7 +14,7 @@ const app = express();
 // Middleware to handle CORS
 app.use(
   cors({
-    origin: "https://shivamstracker.netlify.app",
+    origin: ["https://shivamstracker.netlify.app", "http://localhost:3000", "http://localhost:8000"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
