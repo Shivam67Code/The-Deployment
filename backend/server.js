@@ -14,7 +14,12 @@ const app = express();
 // Middleware to handle CORS
 app.use(
   cors({
-    origin: ["https://shivamstracker.netlify.app", "http://localhost:3000", "http://localhost:8000"],
+    origin: [
+      "https://shivamstracker.netlify.app",
+      "http://localhost:3000",
+      "http://localhost:8000",
+      "http://localhost:5000"
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -23,8 +28,7 @@ app.use(express.json());
 
 app.get('/', (req, res) => {
   res.send("API is running...");
-}
-);
+});
 
 connectDB();
 
