@@ -1,4 +1,3 @@
-require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -54,6 +53,5 @@ app.use("/api/v1/meals", mealRoutes);
 // Serve uploads folder (optional, depending on your app)
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Start the server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Export the serverless handler
+module.exports = app;
