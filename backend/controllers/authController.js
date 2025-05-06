@@ -3,6 +3,10 @@ const User = require('../models/Users');
 
 // Generate JWT Token 
 const generateToken = (id) => {
+  if (!process.env.JWT_SECRET) {
+    console.error("JWT_SECRET environment variable is not set");
+    throw new Error("Server configuration error");
+  }
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: '30d',
   });
@@ -41,13 +45,34 @@ exports.registerUser = async (req, res) => {
     });
 
     res.status(201).json({
-      id: user._id,
-      user,
+      _id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      profileImageUrl: user.profileImageUrl,
       token: generateToken(user._id),
     });
   } catch (err) {
     console.error("Registration error:", err);
-    res.status(500).json({ message: "Error Registering User", error: err.message });
+
+    // Handle specific error types
+    if (err.code === 11000) {
+      return res.status(400).json({
+        message: "Email already in use"
+      });
+    }
+
+    // Handle validation errors
+    if (err.name === 'ValidationError') {
+      const messages = Object.values(err.errors).map(val => val.message);
+      return res.status(400).json({
+        message: messages.join(', ')
+      });
+    }
+
+    res.status(500).json({
+      message: "Error registering user",
+      error: process.env.NODE_ENV === 'production' ? 'Server error' : err.message
+    });
   }
 };
 
@@ -71,7 +96,7 @@ exports.loginUser = async (req, res) => {
     // Check if user exists and password matches
     if (user && (await user.comparePassword(password))) {
       const token = generateToken(user._id);
-      console.log('Login successful, token generated');
+      console.log('Login successful, token generated:', token.substring(0, 10) + '...');
 
       res.json({
         _id: user._id,
