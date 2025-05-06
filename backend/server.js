@@ -11,20 +11,31 @@ const mealRoutes = require('./routes/mealRoutes');
 
 const app = express();
 
-// Middleware to handle CORS
+// CORS middleware with more explicit configuration
 const corsOptions = {
   origin: ["https://shivamstracker.netlify.app", "http://localhost:3000"],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
   credentials: true,
   exposedHeaders: ["Authorization"],
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 };
 
 app.use(cors(corsOptions));
+
+// Explicitly handle OPTIONS requests
+app.options('*', cors(corsOptions));
+
 app.use(express.json());
 
 app.get('/', (req, res) => {
   res.send("API is running...");
+});
+
+// Debug route to check CORS headers
+app.get('/test-cors', (req, res) => {
+  res.json({ message: "CORS is working!" });
 });
 
 connectDB();
