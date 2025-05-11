@@ -48,9 +48,25 @@ const corsOptions = {
   maxAge: 86400 // 24 hours
 };
 
-// Apply CORS middleware
+// Apply CORS middleware - using both standard and preflight configuration
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+// Add preflight OPTIONS handler for all routes - very important for allowing requests from browsers
+app.options('*', (req, res) => {
+  // Include proper headers manually for more debugging
+  const origin = req.headers.origin;
+  console.log("🔍 Preflight OPTIONS request from origin:", origin);
+
+  // Send headers to allow the request
+  res.header('Access-Control-Allow-Origin', origin);
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.header('Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-CSRF-Token, X-Api-Version');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Max-Age', '86400');
+
+  // Return 200 OK for preflight
+  res.status(200).end();
+});
 
 // Body parser middleware with increased limits
 app.use(express.json({ limit: '50mb' }));

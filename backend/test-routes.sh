@@ -1,5 +1,5 @@
 #!/bin/bash
-# API Route tester script
+# API Route tester script with CORS verification
 
 # Set base URL - change this to your actual backend URL
 BASE_URL="https://the-deployment.onrender.com"
@@ -8,9 +8,17 @@ BASE_URL="https://the-deployment.onrender.com"
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}===== Testing Auth Routes =====${NC}"
+echo -e "${BLUE}===== Testing Auth Routes with CORS =====${NC}"
+
+# First check OPTIONS for CORS preflight
+echo -e "\n${YELLOW}Testing CORS preflight OPTIONS request${NC}"
+curl -v -X OPTIONS "$BASE_URL/api/v1/auth/register" \
+  -H "Origin: https://shivamstracker.netlify.app" \
+  -H "Access-Control-Request-Method: POST" \
+  -H "Access-Control-Request-Headers: Content-Type,Authorization"
 
 # Test routes with GET requests
 test_get_route() {

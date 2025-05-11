@@ -69,7 +69,9 @@ exports.registerUser = async (req, res) => {
 
     // Handle specific error types
     if (err.code === 11000) {
+      console.log("Duplicate key error detected (email already exists)");
       return res.status(400).json({
+        success: false,
         message: "Email already in use",
         error: err.message
       });
@@ -77,12 +79,22 @@ exports.registerUser = async (req, res) => {
 
     // Handle validation errors
     if (err.name === 'ValidationError') {
+      console.log("Validation error in schema:", err.errors);
       const messages = Object.values(err.errors).map(val => val.message);
       return res.status(400).json({
+        success: false,
         message: messages.join(', '),
         error: err.message
       });
     }
+
+    // Log the raw request headers for debugging CORS
+    console.log("Request headers:", {
+      origin: req.headers.origin,
+      host: req.headers.host,
+      referer: req.headers.referer,
+      contentType: req.headers['content-type']
+    });
 
     // Always return the full error details in response for now to help debug
     res.status(500).json({
