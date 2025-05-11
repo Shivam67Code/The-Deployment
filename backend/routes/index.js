@@ -7,7 +7,7 @@ const userRoutes = require('./userRoutes');
 
 // Routes
 router.use('/auth', authRoutes);
-router.use('/expenses', expenseRoutes);
+router.use('/expense', expenseRoutes);
 router.use('/income', incomeRoutes);
 router.use('/user', userRoutes);
 
