@@ -4,12 +4,20 @@ const User = require('../models/Users');
 exports.protect = async (req, res, next) => {
   try {
     let token;
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-      token = req.headers.authorization.split(' ')[1];
+
+    // Check for Authorization header
+    if (!req.headers.authorization) {
+      return res.status(401).json({ message: 'Authorization header missing' });
     }
 
+    // Check for Bearer token format
+    if (!req.headers.authorization.startsWith('Bearer')) {
+      return res.status(401).json({ message: 'Invalid token format. Must be Bearer token' });
+    }
+
+    token = req.headers.authorization.split(' ')[1];
     if (!token) {
-      return res.status(401).json({ message: 'Not authorized, no token' });
+      return res.status(401).json({ message: 'Token missing in Authorization header' });
     }
 
     try {
