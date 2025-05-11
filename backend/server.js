@@ -11,40 +11,54 @@ const mealRoutes = require("./routes/mealRoutes");
 
 const app = express();
 
-// ✅ CORS middleware with dynamic Netlify preview URL support
+// ✅ Enhanced error handling middleware
+app.use((err, req, res, next) => {
+  console.error('🔴 Error:', err.stack);
+  res.status(500).json({
+    message: 'Internal Server Error',
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
+});
+
+// ✅ CORS middleware with comprehensive configuration
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
       'https://shivamstracker.netlify.app',
       'http://localhost:5173',
-      'http://localhost:4173', // Vite preview
-      'https://the-deployment.onrender.com'
-    ];
+      'http://localhost:4173',
+      process.env.CLIENT_URL
+    ].filter(Boolean); // Remove any undefined values
 
-    // Updated Netlify preview pattern to match your specific deploy preview URLs
-    const netlifyPreviewPattern = /^https:\/\/[a-z0-9]+-{1,2}shivamstracker\.netlify\.app$/;
+    // Updated pattern to match both preview and production URLs
+    const netlifyPattern = /^https:\/\/(?:[a-z0-9]+-{1,2})?shivamstracker\.netlify\.app$/;
 
-    if (
-      !origin || // allow tools like Postman
-      allowedOrigins.includes(origin) ||
-      netlifyPreviewPattern.test(origin)
-    ) {
+    if (!origin || allowedOrigins.includes(origin) || netlifyPattern.test(origin)) {
+      console.log('✅ CORS: Allowing origin:', origin);
       callback(null, true);
     } else {
-      console.log("❌ Blocked by CORS:", origin);
-      callback(new Error("Not allowed by CORS"));
+      console.log('❌ CORS: Blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
     }
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: [
-    'X-CSRF-Token', 'X-Requested-With', 'Accept', 'Accept-Version',
-    'Content-Length', 'Content-MD5', 'Content-Type', 'Date',
-    'X-Api-Version', 'Authorization'
+    'X-CSRF-Token',
+    'X-Requested-With',
+    'Accept',
+    'Accept-Version',
+    'Content-Length',
+    'Content-MD5',
+    'Content-Type',
+    'Date',
+    'X-Api-Version',
+    'Authorization'
   ],
   credentials: true,
   exposedHeaders: ['Authorization'],
   preflightContinue: false,
-  optionsSuccessStatus: 204
+  optionsSuccessStatus: 204,
+  maxAge: 86400 // Cache preflight request for 24 hours
 };
 
 app.use(cors(corsOptions));
@@ -52,11 +66,18 @@ app.use(cors(corsOptions));
 // Explicitly handle OPTIONS requests
 app.options('*', cors(corsOptions));
 
-app.use(express.json());
+// Increase payload size limit
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// ✅ Health check endpoint
+// ✅ Health check endpoint with detailed status
 app.get('/', (req, res) => {
-  res.send("✅ API is running...");
+  res.json({
+    status: 'healthy',
+    message: '✅ API is running',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV
+  });
 });
 
 // ✅ Debug route to verify CORS
