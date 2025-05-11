@@ -21,7 +21,8 @@ const corsOptions = {
       'https://the-deployment.onrender.com'
     ];
 
-    const netlifyPreviewPattern = /^https:\/\/[a-z0-9\-]+--shivamstracker\.netlify\.app$/;
+    // Updated Netlify preview pattern to match your specific deploy preview URLs
+    const netlifyPreviewPattern = /^https:\/\/[a-z0-9]+-{1,2}shivamstracker\.netlify\.app$/;
 
     if (
       !origin || // allow tools like Postman
