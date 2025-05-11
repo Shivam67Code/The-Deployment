@@ -13,7 +13,7 @@ const publicRoutes = [
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
-  timeout: 10000,
+  timeout: 30000, // Increased to 30 seconds for Render's cold start
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",

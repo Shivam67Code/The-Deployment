@@ -100,4 +100,9 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ✅ Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+const server = app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+// Set server timeouts
+server.timeout = 60000; // 60 seconds
+server.keepAliveTimeout = 65000; // slightly higher than timeout
+server.headersTimeout = 66000; // slightly higher than keepAliveTimeout
