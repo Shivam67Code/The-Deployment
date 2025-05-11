@@ -65,8 +65,20 @@ app.get('/', (req, res) => {
     environment: process.env.NODE_ENV,
     cors: {
       enabled: true,
-      allowedOrigins: corsOptions.origin.toString()
+      allowedOrigins: Array.isArray(corsOptions.origin)
+        ? corsOptions.origin.join(', ')
+        : 'Function-based CORS configuration'
     }
+  });
+});
+
+// Add a debug endpoint to check request headers
+app.get('/debug-headers', (req, res) => {
+  res.json({
+    headers: req.headers,
+    origin: req.headers.origin,
+    host: req.headers.host,
+    timestamp: new Date().toISOString()
   });
 });
 
@@ -91,9 +103,29 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // ✅ Enhanced error handling middleware - should be after routes
 const errorHandler = (err, req, res, next) => {
   console.error('🔴 Error:', err.stack);
+
+  // Log detailed error info
+  console.error({
+    url: req.originalUrl,
+    method: req.method,
+    headers: req.headers,
+    body: req.body,
+    query: req.query,
+    params: req.params,
+    error: {
+      name: err.name,
+      message: err.message,
+      code: err.code
+    }
+  });
+
+  // Send appropriate response
   res.status(500).json({
+    success: false,
     message: 'Internal Server Error',
-    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    error: err.message, // Always include error message for debugging
+    path: req.originalUrl,
+    timestamp: new Date().toISOString()
   });
 };
 

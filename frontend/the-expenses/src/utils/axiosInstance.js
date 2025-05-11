@@ -18,6 +18,8 @@ const axiosInstance = axios.create({
     "Content-Type": "application/json",
     Accept: "application/json",
   },
+  // Allow cookies to be sent cross-domain for credential auth
+  withCredentials: true
 });
 
 // 🔐 Request Interceptor
@@ -49,21 +51,41 @@ axiosInstance.interceptors.request.use(
 
 // 🚨 Response Interceptor
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log("✅ API Success Response:", response.status, response.config.url);
+    return response;
+  },
   (error) => {
     if (error.response) {
-      console.error("❌ API Response Error:", error.response.status, error.response.data);
+      console.error("❌ API Response Error:", {
+        status: error.response.status,
+        data: error.response.data,
+        url: error.config?.url,
+        method: error.config?.method
+      });
+
+      // Add additional debugging for authentication issues
+      if (error.config?.url?.includes('/api/v1/auth')) {
+        console.error("🔑 Auth API Error Details:", {
+          headers: error.config?.headers,
+          data: error.config?.data,
+          responseHeaders: error.response?.headers
+        });
+      }
 
       if (error.response.status === 401 && !publicRoutes.some(route => error.config?.url?.includes(route))) {
+        console.log("🔒 Unauthorized access - clearing token and redirecting to login");
         localStorage.removeItem("token");
         if (!window.location.pathname.includes("/login")) {
           window.location.href = "/login";
         }
       } else if (error.response.status === 500) {
-        console.error("❗ Server error – try again later");
+        console.error("❗ Server error:", error.response.data);
+      } else if (error.response.status === 404) {
+        console.error("🔍 Resource not found:", error.config?.url);
       }
     } else if (error.code === "ECONNABORTED") {
-      console.error("⏱️ Request timeout");
+      console.error("⏱️ Request timeout - server might be experiencing high load or cold start");
     } else {
       console.error("🌐 Network error:", error.message);
     }

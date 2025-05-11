@@ -15,18 +15,26 @@ const generateToken = (id) => {
 // Register User
 exports.registerUser = async (req, res) => {
   try {
+    // Enhanced debugging for production issues
+    console.log("🟢 Register attempt received");
+    console.log("Content-Type:", req.headers['content-type']);
+    console.log("Request body type:", typeof req.body);
+
     // Check if req.body exists before trying to destructure from it
     if (!req.body) {
+      console.error("❌ Request body missing");
       return res.status(400).json({ message: "Request body is missing" });
     }
 
     // Log the request body to debug
-    console.log("Request body:", req.body);
+    console.log("Request body:", JSON.stringify(req.body));
 
     const { fullName, email, password, profileImageUrl } = req.body || {};
+    console.log("Parsed fields:", { fullName: !!fullName, email: !!email, password: !!password });
 
     // Validation: Check for missing fields
     if (!fullName || !email || !password) {
+      console.error("❌ Missing required fields");
       return res.status(400).json({ message: "All Fields are Required 📂" });
     }
 
@@ -54,6 +62,10 @@ exports.registerUser = async (req, res) => {
     });
   } catch (err) {
     console.error("Registration error:", err);
+    console.error("Error name:", err.name);
+    console.error("Error code:", err.code);
+    console.error("Error message:", err.message);
+    console.error("Error stack:", err.stack);
 
     // Handle specific error types
     if (err.code === 11000) {
@@ -72,10 +84,12 @@ exports.registerUser = async (req, res) => {
       });
     }
 
+    // Always return the full error details in response for now to help debug
     res.status(500).json({
+      success: false,
       message: "Error registering user",
-      error: process.env.NODE_ENV === 'development' ? err.message : 'Server error',
-      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+      error: err.message,
+      stack: err.stack
     });
   }
 };
@@ -83,14 +97,22 @@ exports.registerUser = async (req, res) => {
 // Login User
 exports.loginUser = async (req, res) => {
   try {
-    console.log('Login attempt for:', req.body.email);
+    // Enhanced debugging for production issues
+    console.log("🟢 Login attempt received");
+    console.log("Content-Type:", req.headers['content-type']);
+    console.log("Request body type:", typeof req.body);
+    console.log("Request body:", JSON.stringify(req.body));
 
     const { email, password } = req.body || {};
+    console.log('Login attempt for:', email ? email : 'email missing');
 
     // Validate request
     if (!email || !password) {
-      console.log('Missing email or password');
-      return res.status(400).json({ message: "Please provide email and password" });
+      console.log('❌ Missing email or password');
+      return res.status(400).json({
+        success: false,
+        message: "Please provide email and password"
+      });
     }
 
     // Find the user

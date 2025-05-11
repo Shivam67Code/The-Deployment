@@ -158,9 +158,8 @@ const SignUp = () => {
     }
   };
   
-  // Handle Sign Up Form Submit
-  const handleSignUp = async (e) => {
-    e.preventDefault();
+  // Handle Sign Up Form Submit  const handleSignUp = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
     
     // Basic form validation
     if (!fullName) {
@@ -183,27 +182,76 @@ const SignUp = () => {
     
     // Sign Up API Call   
     try {
-      const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
-        fullName,
-        email,
-        password
+      // Debug log for registration attempt
+      console.log("📝 Registration attempt with:", { 
+        fullName, 
+        email: email.trim(), 
+        password: password ? "********" : "empty" 
       });
-      const { token, user } = response.data;
       
-      if (token) {
-        localStorage.setItem("token", token);
-        updateUser(user);
+      const response = await axiosInstance.post(
+        API_PATHS.AUTH.REGISTER, 
+        {
+          fullName: fullName.trim(),
+          email: email.trim(),
+          password
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      console.log("✅ Registration response:", response.status, response.data);
+      
+      // Safety check the response
+      if (!response.data) {
+        throw new Error("Invalid response from server");
+      }
+      
+      // Extract user data from the response
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        updateUser(response.data);
         setFormStep(4); // Success step
         setTimeout(() => {
           navigate("/dashboard");
         }, 1500);
+      } else {
+        console.error("❌ No token in registration response:", response.data);
+        throw new Error("Registration successful but no authentication token received");
       }
     } catch (error) {
-      if (error.response && error.response.data.message) {
-        setError(error.response.data.message);
-      } else {
-        setError("Something went wrong. Please try again.");
+      console.error("❌ Registration error:", error);
+      
+      // Better error handling with specific messages
+      let errorMessage = "Something went wrong. Please try again.";
+      
+      if (error.response) {
+        console.error("Response error details:", {
+          status: error.response.status,
+          data: error.response.data,
+          headers: error.response.headers
+        });
+        
+        if (error.response.status === 400) {
+          errorMessage = error.response.data.message || "Invalid registration data";
+          if (error.response.data.message?.includes("email")) {
+            errorMessage = "This email is already registered or invalid";
+          }
+        } else if (error.response.status === 404) {
+          errorMessage = "Registration service is unavailable. Please try again later.";
+        } else if (error.response.status === 500) {
+          errorMessage = "Server error during registration. Please try again later.";
+        }
+      } else if (error.code === 'ECONNABORTED') {
+        errorMessage = 'Registration request timed out. Server may be starting up, please try again.';
+      } else if (!navigator.onLine) {
+        errorMessage = 'You appear to be offline. Please check your internet connection.';
       }
+      
+      setError(errorMessage);
       setIsLoading(false);
     }
   };

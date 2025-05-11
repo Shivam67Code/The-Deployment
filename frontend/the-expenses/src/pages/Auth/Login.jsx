@@ -115,16 +115,33 @@ const Login = () => {
     setIsPasswordValid(password.length >= 7);
     setPasswordStrength(checkPasswordStrength(password));
   }, [password, checkPasswordStrength]);
-
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
     try {
-      console.log('Attempting login with:', { email, password });
-      const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, { email, password });
-      console.log('Login response:', response);
+      // Improved debugging for login attempts
+      console.log('📝 Attempting login with:', { email: email.trim(), password: password ? '********' : 'empty' });
+      
+      // Make sure we're using JSON content type
+      const response = await axiosInstance.post(
+        API_PATHS.AUTH.LOGIN, 
+        { email: email.trim(), password },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      console.log('✅ Login response:', response.status, response.data);
+
+      // Safety check response data
+      if (!response.data || !response.data.token) {
+        console.error('❌ Invalid login response format:', response.data);
+        throw new Error('Invalid server response');
+      }
 
       // Save token to local storage with consistent naming
       localStorage.setItem('token', response.data.token);
@@ -139,8 +156,26 @@ const Login = () => {
         navigate('/dashboard');
       }, 1500);
     } catch (error) {
-      console.error('Login error details:', error.response || error);
-      setError(error.response?.data?.message || 'Something went wrong. Please try again later.');
+      console.error('❌ Login error details:', error.response || error);
+      
+      // Better error handling with specific messages
+      let errorMessage = 'Something went wrong. Please try again later.';
+      
+      if (error.response) {
+        if (error.response.status === 400) {
+          errorMessage = error.response.data.message || 'Invalid email or password';
+        } else if (error.response.status === 404) {
+          errorMessage = 'Authentication service is unavailable. Please try again later.';
+        } else if (error.response.status === 500) {
+          errorMessage = 'Server error. Our team has been notified.';
+        }
+      } else if (error.code === 'ECONNABORTED') {
+        errorMessage = 'Login request timed out. Server may be starting up, please try again.';
+      } else if (!navigator.onLine) {
+        errorMessage = 'You appear to be offline. Please check your internet connection.';
+      }
+      
+      setError(errorMessage);
       shakeError();
     } finally {
       setIsLoading(false);

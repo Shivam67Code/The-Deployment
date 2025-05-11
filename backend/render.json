@@ -3,13 +3,12 @@
     "env": {
       "NODE_ENV": "production"
     }
-  },
-  "healthCheck": {
+  },  "healthCheck": {
     "port": 10000,
     "path": "/",
-    "interval": 10,
-    "timeout": 5,
-    "retries": 3
+    "interval": 30,
+    "timeout": 10,
+    "retries": 5
   },
   "startCommand": "node server.js"
 }
