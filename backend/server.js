@@ -17,7 +17,8 @@ const corsOptions = {
     const allowedOrigins = [
       'https://shivamstracker.netlify.app',
       'http://localhost:5173',
-      'https://the-deployment.vercel.app'
+      'http://localhost:4173', // Vite preview
+      'https://the-deployment.onrender.com'
     ];
 
     const netlifyPreviewPattern = /^https:\/\/[a-z0-9\-]+--shivamstracker\.netlify\.app$/;

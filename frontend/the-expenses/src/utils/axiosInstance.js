@@ -1,10 +1,10 @@
 import axios from "axios";
 
-// ✅ Correct BASE_URL without repeating /api/v1
-const BASE_URL =
-  import.meta.env.MODE === "production"
-    ? import.meta.env.VITE_API_BASE || "https://the-deployment.vercel.app"
-    : "http://localhost:5000";
+// Fix the BASE_URL to not include /api/v1 as that will be in the API_PATHS
+const BASE_URL = import.meta.env.VITE_API_BASE_URL ||
+  (import.meta.env.MODE === "production"
+    ? "https://the-deployment.onrender.com"
+    : "http://localhost:5000");
 
 console.log("🟡 API Base URL:", BASE_URL);
 
@@ -20,6 +20,9 @@ const axiosInstance = axios.create({
 // 🔐 Request Interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
+    // For debugging - log the full URL being requested
+    console.log(`🔄 Request to: ${config.baseURL}${config.url}`);
+
     const accessToken = localStorage.getItem("token") || localStorage.getItem("authToken");
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
