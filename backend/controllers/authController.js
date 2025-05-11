@@ -42,14 +42,15 @@ exports.registerUser = async (req, res) => {
       email,
       password,
       profileImageUrl,
-    });
+    });    // Generate token for the new user
+    const token = generateToken(user._id);
 
     res.status(201).json({
       _id: user._id,
       fullName: user.fullName,
       email: user.email,
       profileImageUrl: user.profileImageUrl,
-      token: generateToken(user._id),
+      token, // Include the token in the response
     });
   } catch (err) {
     console.error("Registration error:", err);

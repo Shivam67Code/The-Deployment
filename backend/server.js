@@ -11,13 +11,17 @@ const mealRoutes = require('./routes/mealRoutes');
 
 const app = express();
 
-// CORS middleware with more explicit configuration
+// CORS middleware with explicit configuration for production and development
 const corsOptions = {
-  origin: ["https://shivamstracker.netlify.app", "http://localhost:3000"],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
+  origin: [
+    'https://shivamstracker.netlify.app',
+    'http://localhost:5173',
+    'https://the-deployment.vercel.app'
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
   credentials: true,
-  exposedHeaders: ["Authorization"],
+  exposedHeaders: ['Authorization'],
   preflightContinue: false,
   optionsSuccessStatus: 204
 };
