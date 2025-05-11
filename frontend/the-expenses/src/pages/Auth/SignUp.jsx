@@ -150,15 +150,15 @@ const SignUp = () => {
       setFormStep(formStep + 1);
     }
   };
-  
-  // Handle previous step in form
+    // Handle previous step in form
   const handlePrevStep = () => {
     if (formStep > 0) {
       setFormStep(formStep - 1);
     }
   };
   
-  // Handle Sign Up Form Submit  const handleSignUp = async (e) => {
+  // Handle Sign Up Form Submit
+  const handleSignUp = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
     
     // Basic form validation
