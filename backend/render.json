@@ -1,0 +1,15 @@
+{
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
+  },
+  "healthCheck": {
+    "port": 10000,
+    "path": "/",
+    "interval": 10,
+    "timeout": 5,
+    "retries": 3
+  },
+  "startCommand": "node server.js"
+}

@@ -11,62 +11,48 @@ const mealRoutes = require("./routes/mealRoutes");
 
 const app = express();
 
-// ✅ Enhanced error handling middleware
-app.use((err, req, res, next) => {
-  console.error('🔴 Error:', err.stack);
-  res.status(500).json({
-    message: 'Internal Server Error',
-    error: process.env.NODE_ENV === 'development' ? err.message : undefined
-  });
-});
-
-// ✅ CORS middleware with comprehensive configuration
+// ✅ CORS middleware with properly configured origins
 const corsOptions = {
   origin: function (origin, callback) {
+    // Allow these specific origins
     const allowedOrigins = [
       'https://shivamstracker.netlify.app',
+      'https://www.shivamstracker.netlify.app',
+      // Netlify preview deployments (using wildcard)
+      /https:\/\/[a-z0-9-]+--shivamstracker\.netlify\.app$/,
+      // For local development
       'http://localhost:5173',
-      'http://localhost:4173',
-      process.env.CLIENT_URL
-    ].filter(Boolean); // Remove any undefined values
+      'http://localhost:3000'
+    ];
 
-    // Updated pattern to match both preview and production URLs
-    const netlifyPattern = /^https:\/\/(?:[a-z0-9]+-{1,2})?shivamstracker\.netlify\.app$/;
-
-    if (!origin || allowedOrigins.includes(origin) || netlifyPattern.test(origin)) {
-      console.log('✅ CORS: Allowing origin:', origin);
+    // Check if origin is allowed or if it's a same-origin request (origin is null)
+    if (!origin || allowedOrigins.some(allowed =>
+      typeof allowed === 'string' ? allowed === origin : allowed.test(origin)
+    )) {
       callback(null, true);
     } else {
-      console.log('❌ CORS: Blocked origin:', origin);
+      console.log(`❌ CORS blocked origin: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: [
-    'X-CSRF-Token',
-    'X-Requested-With',
-    'Accept',
-    'Accept-Version',
-    'Content-Length',
-    'Content-MD5',
-    'Content-Type',
-    'Date',
-    'X-Api-Version',
-    'Authorization'
+    'X-CSRF-Token', 'X-Requested-With', 'Accept', 'Accept-Version',
+    'Content-Length', 'Content-MD5', 'Content-Type', 'Date',
+    'X-Api-Version', 'Authorization'
   ],
-  credentials: true,
   exposedHeaders: ['Authorization'],
   preflightContinue: false,
   optionsSuccessStatus: 204,
-  maxAge: 86400 // Cache preflight request for 24 hours
+  maxAge: 86400 // 24 hours
 };
 
+// Apply CORS middleware
 app.use(cors(corsOptions));
-
-// Explicitly handle OPTIONS requests
 app.options('*', cors(corsOptions));
 
-// Increase payload size limit
+// Body parser middleware with increased limits
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
@@ -76,7 +62,11 @@ app.get('/', (req, res) => {
     status: 'healthy',
     message: '✅ API is running',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV
+    environment: process.env.NODE_ENV,
+    cors: {
+      enabled: true,
+      allowedOrigins: corsOptions.origin.toString()
+    }
   });
 });
 
@@ -85,24 +75,53 @@ app.get('/test-cors', (req, res) => {
   res.json({ message: "✅ CORS is working!" });
 });
 
-// ✅ Connect MongoDB
+// ✅ Connect MongoDB first
 connectDB();
 
-// ✅ API routes
+// ✅ Mount routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/income", incomeRoutes);
 app.use("/api/v1/expense", expenseRoutes);
 app.use("/api/v1/dashboard", dashboardRoutes);
 app.use("/api/v1/meals", mealRoutes);
 
-// ✅ Serve static files (e.g., image uploads)
+// ✅ Static files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// ✅ Start server
-const PORT = process.env.PORT || 5000;
-const server = app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+// ✅ Enhanced error handling middleware - should be after routes
+const errorHandler = (err, req, res, next) => {
+  console.error('🔴 Error:', err.stack);
+  res.status(500).json({
+    message: 'Internal Server Error',
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
+};
 
-// Set server timeouts
-server.timeout = 60000; // 60 seconds
-server.keepAliveTimeout = 65000; // slightly higher than timeout
-server.headersTimeout = 66000; // slightly higher than keepAliveTimeout
+// Apply error handler - must be after routes
+app.use(errorHandler);
+
+// ✅ Start server with enhanced error handling
+const PORT = process.env.PORT || 10000;
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV}`);
+  console.log(`🔑 MongoDB connection: ${process.env.MONGO_URI ? 'Configured' : 'Missing'}`);
+  console.log(`🔑 JWT Secret: ${process.env.JWT_SECRET ? 'Configured' : 'Missing'}`);
+}).on('error', (error) => {
+  console.error('❌ Server failed to start:', error);
+  process.exit(1);
+});
+
+// Set server timeouts for Render's environment
+server.timeout = 120000; // 2 minutes
+server.keepAliveTimeout = 121000; // Slightly higher than timeout
+server.headersTimeout = 122000; // Slightly higher than keepAliveTimeout
+
+// Handle graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('🛑 SIGTERM received. Performing graceful shutdown...');
+  server.close(() => {
+    console.log('✅ Server closed. Exiting process.');
+    process.exit(0);
+  });
+});

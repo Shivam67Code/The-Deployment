@@ -58,7 +58,8 @@ exports.registerUser = async (req, res) => {
     // Handle specific error types
     if (err.code === 11000) {
       return res.status(400).json({
-        message: "Email already in use"
+        message: "Email already in use",
+        error: err.message
       });
     }
 
@@ -66,13 +67,15 @@ exports.registerUser = async (req, res) => {
     if (err.name === 'ValidationError') {
       const messages = Object.values(err.errors).map(val => val.message);
       return res.status(400).json({
-        message: messages.join(', ')
+        message: messages.join(', '),
+        error: err.message
       });
     }
 
     res.status(500).json({
       message: "Error registering user",
-      error: process.env.NODE_ENV === 'production' ? 'Server error' : err.message
+      error: process.env.NODE_ENV === 'development' ? err.message : 'Server error',
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
     });
   }
 };
